@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 type Item = {
@@ -9,10 +9,13 @@ type Item = {
   grammarTag?: string;
 };
 
-export default function TeacherPage() {
+function TeacherPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const classIdFromUrl = searchParams.get("classId") || "";
+
+  const classIdFromUrl = useMemo(() => {
+    return (searchParams.get("classId") || "").trim();
+  }, [searchParams]);
 
   const [topic, setTopic] = useState("travel");
   const [level, setLevel] = useState("A2");
@@ -279,5 +282,13 @@ export default function TeacherPage() {
         </div>
       )}
     </main>
+  );
+}
+
+export default function TeacherPage() {
+  return (
+    <Suspense fallback={<div style={{ padding: "2rem", fontFamily: "sans-serif" }}>Loading…</div>}>
+      <TeacherPageInner />
+    </Suspense>
   );
 }
