@@ -4,8 +4,8 @@ import { useState } from "react";
 
 type Item = {
   text: string;
-  followUp: string;
-  grammarTag: string;
+  hint?: string;
+  grammarTag?: string;
 };
 
 export default function TeacherPage() {
@@ -152,17 +152,17 @@ export default function TeacherPage() {
               <div style={{ marginBottom: 8 }}>
                 <div>Q{i + 1} text</div>
                 <input
-                  value={it.text}
+                  value={it.text || ""}
                   onChange={(e) => updateItem(i, "text", e.target.value)}
                   style={{ width: "100%" }}
                 />
               </div>
 
               <div style={{ marginBottom: 8 }}>
-                <div>Follow-up</div>
+                <div>Hint</div>
                 <input
-                  value={it.followUp}
-                  onChange={(e) => updateItem(i, "followUp", e.target.value)}
+                  value={it.hint || ""}
+                  onChange={(e) => updateItem(i, "hint", e.target.value)}
                   style={{ width: "100%" }}
                 />
               </div>
@@ -170,7 +170,7 @@ export default function TeacherPage() {
               <div>
                 <div>Grammar tag</div>
                 <input
-                  value={it.grammarTag}
+                  value={it.grammarTag || ""}
                   onChange={(e) => updateItem(i, "grammarTag", e.target.value)}
                   style={{ width: "100%" }}
                 />

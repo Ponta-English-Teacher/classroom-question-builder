@@ -12,9 +12,7 @@ async function kv(command: any[]) {
     throw new Error("Upstash env vars missing");
   }
 
-  const url = UPSTASH_URL.endsWith("/v2/redis")
-    ? UPSTASH_URL
-    : `${UPSTASH_URL}/v2/redis`;
+const url = UPSTASH_URL;
 
   const res = await fetch(url, {
     method: "POST",
