@@ -18,8 +18,6 @@ export async function POST(req: Request) {
     const body = await req.json().catch(() => ({}));
     const text = String(body.text || "").trim();
     const voice = String(body.voice || "en-US-JennyNeural").trim();
-    const rateRaw = body.rate ?? "0%";
-
 
     if (!text) {
       return json({ ok: false, error: "Missing text" }, 400);
@@ -34,11 +32,11 @@ export async function POST(req: Request) {
       .replaceAll("'", "&apos;");
 
     const ssml = `<?xml version="1.0" encoding="utf-8"?>
-<speak version="1.0" xml:lang="en-US" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts">
+<speak version="1.0" xml:lang="en-US"
+  xmlns="http://www.w3.org/2001/10/synthesis"
+  xmlns:mstts="http://www.w3.org/2001/mstts">
   <voice name="${voice}">
-    <prosody rate="${rate}">
-      ${safeText}
-    </prosody>
+    ${safeText}
   </voice>
 </speak>`;
 
