@@ -13,6 +13,8 @@ export default function TeacherPage() {
   const [level, setLevel] = useState("A2");
   const [count, setCount] = useState(5);
   const [classSize, setClassSize] = useState(20);
+  const [teacherInstruction, setTeacherInstruction] = useState("");
+  const [avoid, setAvoid] = useState("");
 
   const [classId, setClassId] = useState<string>("");
   const [items, setItems] = useState<Item[]>([]);
@@ -35,17 +37,26 @@ export default function TeacherPage() {
   }
 
   async function generateQuestions() {
-    setStatus("Generating questions...");
+    setStatus("Generating questions with AI...");
+
     const r = await fetch("/api/generate-questions", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ topic, level, count }),
+      body: JSON.stringify({
+        topic,
+        level,
+        count,
+        teacherInstruction,
+        avoid,
+      }),
     });
+
     const j = await r.json();
     if (!j.ok) {
       setStatus("Error: " + j.error);
       return;
     }
+
     setItems(j.items || []);
     setStatus("Questions generated. You can edit them now.");
   }
@@ -123,11 +134,33 @@ export default function TeacherPage() {
             style={{ marginLeft: 8, width: 80 }}
           />
         </label>
+
+        <label>
+          Teacher instruction (optional):
+          <input
+            value={teacherInstruction}
+            onChange={(e) => setTeacherInstruction(e.target.value)}
+            style={{ marginLeft: 8, width: 520 }}
+          />
+          <div style={{ marginLeft: 8, marginTop: 4, fontSize: 13, color: "#555" }}>
+            Example: Use common fruits in &quot;Do you like ___?&quot;
+          </div>
+        </label>
+
+        <label>
+          Avoid (optional):
+          <input
+            value={avoid}
+            onChange={(e) => setAvoid(e.target.value)}
+            placeholder="e.g. abstract ideas, politics, philosophy"
+            style={{ marginLeft: 8, width: 520 }}
+          />
+        </label>
       </div>
 
       <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: "1rem" }}>
         <button onClick={createSession}>Create new session</button>
-        <button onClick={generateQuestions}>Generate questions</button>
+        <button onClick={generateQuestions}>Generate questions (AI)</button>
         <button onClick={saveToSession}>Save questions to session</button>
       </div>
 
