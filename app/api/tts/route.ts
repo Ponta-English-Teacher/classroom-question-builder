@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     const text = String(body.text || "").trim();
     const voice = String(body.voice || "en-US-JennyNeural").trim();
     const rateRaw = body.rate ?? "0%";
-    const rate = String(rateRaw).trim(); // e.g. "0%", "-20%"
+
 
     if (!text) {
       return json({ ok: false, error: "Missing text" }, 400);

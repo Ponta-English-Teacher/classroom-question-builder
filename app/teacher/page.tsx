@@ -5,7 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 type Item = {
   text: string;
-  hint?: string;
+  hint?: string;        // English explanation
+  hintJa?: string;      // Japanese support
   grammarTag?: string;
 };
 
