@@ -262,10 +262,11 @@ function TeacherPageInner() {
               </div>
 
               <div style={{ marginBottom: 8 }}>
-                <div>Hint</div>
-                <input
+                <div>Hint (3 lines: JP question / EN explanation / JP explanation)</div>
+                <textarea
                   value={it.hint || ""}
                   onChange={(e) => updateItem(i, "hint", e.target.value)}
+                  rows={3}
                   style={{ width: "100%" }}
                 />
               </div>
