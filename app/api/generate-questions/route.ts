@@ -10,18 +10,28 @@ function json(data: any, status = 200) {
 function hintPolicy(level: string) {
   const L = String(level || "").toUpperCase();
 
+  // A1-A2: 3-line hint, line 2 is a definition/explanation (NOT a question)
   if (L.includes("A1") || L.includes("A2")) {
     return `
 Hint rules (A1–A2):
 - hint MUST be EXACTLY 3 lines, in this order:
-  Line 1: Japanese translation of the QUESTION (e.g. "りんごは好きですか？")
-  Line 2: VERY short English explanation (easy words)
-  Line 3: Japanese translation of Line 2 (support)
+  Line 1: Japanese translation of the QUESTION.
+  Line 2: VERY short English explanation in easy words that DEFINES the key word/idea.
+          - MUST be a statement (NOT a question).
+          - MUST NOT start with "Do you", "Can you", "Will you", "Did you", "Have you".
+          - SHOULD start with "It is ..." or "This is ..." or "They are ...".
+          - MUST include at least TWO identifying features when possible.
+          Examples:
+          - Volleyball: "It is a sport with a ball and a net."
+          - Tennis: "It is a sport with a racket and a small ball."
+          - Swimming: "It is moving in water for sport or fun."
+  Line 3: Japanese translation of Line 2 (support).
 - Do NOT ask follow-up questions.
 - Keep each line short and simple.
 `.trim();
   }
 
+  // B1-B2: allow richer hinting
   return `
 Hint rules (B1–B2):
 - hint must include:
@@ -37,12 +47,12 @@ function clean(s: any) {
   return String(s ?? "").replace(/\s+/g, " ").trim();
 }
 
-// Preserve line breaks for hint display
+// Preserve line breaks for hint display (and keep each line clean)
 function cleanHintPreserveNewlines(s: any) {
   const raw = String(s ?? "").replace(/\r\n/g, "\n").trim();
   const lines = raw
     .split("\n")
-    .map(line => line.replace(/\s+/g, " ").trim())
+    .map((line) => line.replace(/\s+/g, " ").trim())
     .filter(Boolean);
   return lines.join("\n");
 }
@@ -148,7 +158,6 @@ Return ONLY valid JSON in this exact format (no markdown, no extra text):
 
     const itemsRaw = Array.isArray(parsed?.items) ? parsed.items : [];
 
-    // Normalize + enforce "question-shaped" text + enforce count
     const normalized = itemsRaw
       .map((it: any) => ({
         text: clean(it?.text),
@@ -158,7 +167,6 @@ Return ONLY valid JSON in this exact format (no markdown, no extra text):
       .filter((it: any) => looksLikeQuestionText(it.text))
       .slice(0, count);
 
-    // If the model returned junk (e.g., nouns), fail loudly so you notice immediately.
     if (normalized.length < Math.min(1, count)) {
       return json(
         {
