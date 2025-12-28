@@ -13,11 +13,12 @@ function hintPolicy(level: string) {
   if (L.includes("A1") || L.includes("A2")) {
     return `
 Hint rules (A1–A2):
-- hint must include:
-  (1) a VERY short meaning in easy English
-  (2) a Japanese translation
+- hint MUST be EXACTLY 3 lines, in this order:
+  Line 1: Japanese translation of the QUESTION (e.g. "りんごは好きですか？")
+  Line 2: VERY short English explanation (easy words)
+  Line 3: Japanese translation of Line 2 (support)
 - Do NOT ask follow-up questions.
-- Keep it short (1–2 lines).
+- Keep each line short and simple.
 `.trim();
   }
 
@@ -36,12 +37,20 @@ function clean(s: any) {
   return String(s ?? "").replace(/\s+/g, " ").trim();
 }
 
+// Preserve line breaks for hint display
+function cleanHintPreserveNewlines(s: any) {
+  const raw = String(s ?? "").replace(/\r\n/g, "\n").trim();
+  const lines = raw
+    .split("\n")
+    .map(line => line.replace(/\s+/g, " ").trim())
+    .filter(Boolean);
+  return lines.join("\n");
+}
+
 function looksLikeQuestionText(s: string) {
   const t = clean(s);
   if (!t) return false;
-  // must end with "?" (your strongest guardrail against "apples" outputs)
   if (!t.endsWith("?")) return false;
-  // must contain at least 2 words (avoid "Apples?")
   if (t.split(" ").length < 2) return false;
   return true;
 }
@@ -143,7 +152,7 @@ Return ONLY valid JSON in this exact format (no markdown, no extra text):
     const normalized = itemsRaw
       .map((it: any) => ({
         text: clean(it?.text),
-        hint: clean(it?.hint),
+        hint: cleanHintPreserveNewlines(it?.hint),
         grammarTag: clean(it?.grammarTag),
       }))
       .filter((it: any) => looksLikeQuestionText(it.text))
