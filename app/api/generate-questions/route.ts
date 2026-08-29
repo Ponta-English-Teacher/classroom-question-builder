@@ -10,24 +10,14 @@ function json(data: any, status = 200) {
 function hintPolicy(level: string) {
   const L = String(level || "").toUpperCase();
 
-  // A1-A2: 3-line hint, line 2 is a definition/explanation (NOT a question)
   if (L.includes("A1") || L.includes("A2")) {
     return `
 Hint rules (A1–A2):
-- hint MUST be EXACTLY 3 lines, in this order:
-  Line 1: Japanese translation of the QUESTION.
-  Line 2: VERY short English explanation in easy words that DEFINES the key word/idea.
-          - MUST be a statement (NOT a question).
-          - MUST NOT start with "Do you", "Can you", "Will you", "Did you", "Have you".
-          - SHOULD start with "It is ..." or "This is ..." or "They are ...".
-          - MUST include at least TWO identifying features when possible.
-          Examples:
-          - Volleyball: "It is a sport with a ball and a net."
-          - Tennis: "It is a sport with a racket and a small ball."
-          - Swimming: "It is moving in water for sport or fun."
-  Line 3: Japanese translation of Line 2 (support).
+- hint must include:
+  (1) a VERY short meaning in easy English
+  (2) a Japanese translation
 - Do NOT ask follow-up questions.
-- Keep each line short and simple.
+- Keep it short (1–2 lines).
 `.trim();
   }
 
